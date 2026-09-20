@@ -1,0 +1,26 @@
+---
+import Base from "../layouts/Base.astro";
+import { ideas } from "../data/ideas";
+---
+
+<Base title="Lab" description="Experiments and workbench notes — engineering prototypes and personal trading tooling.">
+  <div class="page-head">
+    <p class="eyebrow">Workbench</p>
+    <h2>Lab</h2>
+    <p class="lede">
+      Experiments and workbench notes. Some are engineering prototypes; some are
+      personal trading tooling. Half-formed on purpose — the finished work lives
+      under <a href="/">Work</a>.
+    </p>
+  </div>
+
+  <section style="padding-top: 1.75rem;">
+    {ideas.map((i) => (
+      <div class="card reveal">
+        <span class={`status ${i.status}`}>{i.status}</span>
+        <h3 style="font-family: var(--font-sans); font-size: 1.1rem;">{i.title}</h3>
+        <p>{i.description}</p>
+      </div>
+    ))}
+  </section>
+</Base>
