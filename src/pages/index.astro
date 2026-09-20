@@ -1,0 +1,99 @@
+---
+import Base from "../layouts/Base.astro";
+import { site } from "../data/site";
+import { getCollection } from "astro:content";
+
+const work = await getCollection("work");
+const byId = Object.fromEntries(work.map((w) => [w.id.replace(/\.md$/, ""), w]));
+
+const areas = [
+  {
+    id: "ai-gpu",
+    index: "01",
+    title: "AI & GPU Systems",
+    blurb:
+      "Investigating the layers underneath AI applications — inference cost, hardware utilization, memory and latency constraints, data movement, and the performance bottlenecks that actually matter.",
+    items: ["gada-gpu-analytics", "cachelens"],
+  },
+  {
+    id: "trustworthy",
+    index: "02",
+    title: "Trustworthy / Secure AI",
+    blurb:
+      "Evidence over vibes — evaluation, authorization with provenance, adjudication that tries to falsify itself, and reliability layers for agent systems.",
+    items: ["proofgate-pq", "decisiongate"],
+  },
+  {
+    id: "quantum",
+    index: "03",
+    title: "Quantum & Scientific Computing",
+    blurb:
+      "Emerging computing technologies, explored with an engineer's skepticism — quantum protocols, error correction, and benchmarks run against real hardware, including honest null results.",
+    items: ["entangl", "q-tensor", "elsd"],
+  },
+];
+---
+
+<Base>
+  <div class="hero">
+    <p class="eyebrow">Portfolio — Applied AI · Security · Infrastructure</p>
+    <h1>Hi, I'm {site.name}.</h1>
+    <p class="tagline">{site.tagline}</p>
+    <p class="lede">
+      I build applied AI systems — LLM-powered applications, agent tools, and
+      the infrastructure that makes them useful, measurable, and reliable. My
+      work spans agent systems, AI evaluation and reliability, inference
+      economics, security and authorization, and performance engineering when
+      it matters. Seven projects below are the core of it — the <a href="/projects">full repository catalog</a> has
+      the rest.
+    </p>
+    <div class="hero-actions">
+      <a class="btn btn-primary" href="#areas">Explore the work ↓</a>
+      <a class="btn btn-ghost" href="https://github.com/amitb-gpu" target="_blank" rel="noopener">GitHub ↗</a>
+    </div>
+  </div>
+
+  <div id="areas">
+    {areas.map((area) => (
+      <section class="reveal">
+        <div class="section-head">
+          <span class="index">{area.index} — {area.id === "ai-gpu" ? "AI & GPU" : area.id === "trustworthy" ? "Trustworthy AI" : "Quantum"}</span>
+          <h2>{area.title}</h2>
+          <p class="lede">{area.blurb}</p>
+        </div>
+        <div class="tile-grid">
+          {area.items.map((slug) => {
+            const w = byId[slug];
+            if (!w) return null;
+            return (
+              <article class="tile">
+                <h3><a href={`/work/${slug}`}>{w.data.title}</a></h3>
+                <p class="problem-text"><span class="kicker problem">Problem</span>{w.data.problem}</p>
+                <div class="evidence"><span class="kicker evidence">Evidence</span>{w.data.proof}</div>
+                <div class="tile-links">
+                  <a class="btn btn-primary btn-sm" href={`/work/${slug}`}>Read case study →</a>
+                  <a class="btn btn-ghost btn-sm" href={w.data.github} target="_blank" rel="noopener">{w.data.github.includes("zenodo.org") ? "Zenodo deposit ↗" : "GitHub ↗"}</a>
+                </div>
+              </article>
+            );
+          })}
+        </div>
+      </section>
+    ))}
+  </div>
+
+  <section class="reveal">
+    <div class="cta-panel">
+      <h2><a href="/about">About</a></h2>
+      <p>
+        Software engineering leader and technical founder building applied AI
+        — from LLM cost optimization and agent reliability to post-quantum
+        protocols. Based in {site.location}.
+      </p>
+      <p style="font-weight: 600; color: var(--text);">
+        Building in AI infrastructure, security, or quantum?
+      </p>
+      <a class="btn btn-primary" href="/about">Let's talk →</a>
+    </div>
+  </section>
+</Base>
