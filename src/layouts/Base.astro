@@ -1,0 +1,81 @@
+---
+import "../styles/global.css";
+import { site } from "../data/site";
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const { title, description = site.description } = Astro.props;
+const pageTitle = title ? `${title} — ${site.name}` : `${site.name} — ${site.tagline}`;
+const path = Astro.url.pathname;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{pageTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <header class="site">
+      <div class="wrap">
+        <a class="brand" href="/">
+          <span class="brand-mark">A</span>
+          <span class="domain-text">amit-brahmbhatt<span class="tld">.dev</span></span>
+        </a>
+        <nav>
+          <a href="/" class={path === "/" || path.startsWith("/work") ? "active" : ""}>Work</a>
+          <a href="/blog" class={path.startsWith("/blog") ? "active" : ""}>Writing</a>
+          <a href="/lab" class={path.startsWith("/lab") ? "active" : ""}>Lab</a>
+          <a href="/about" class={path.startsWith("/about") ? "active" : ""}>About</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="wrap">
+      <slot />
+    </main>
+
+    <footer class="site">
+      <div class="wrap">
+        <span>© {new Date().getFullYear()} {site.name} · {site.location}</span>
+        <span>
+          {site.socials.map((s) => (
+            <a href={s.url} target="_blank" rel="noopener">{s.label}</a>
+          ))}
+        </span>
+      </div>
+    </footer>
+
+    <script>
+      const els = document.querySelectorAll(".reveal");
+      if ("IntersectionObserver" in window && els.length > 0) {
+        const io = new IntersectionObserver(
+          (entries) => {
+            for (const e of entries) {
+              if (e.isIntersecting) {
+                e.target.classList.add("visible");
+                io.unobserve(e.target);
+              }
+            }
+          },
+          { threshold: 0.08 }
+        );
+        els.forEach((el) => io.observe(el));
+      } else {
+        els.forEach((el) => el.classList.add("visible"));
+      }
+    </script>
+  </body>
+</html>
